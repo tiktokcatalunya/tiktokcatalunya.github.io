@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Catalunya</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #ff3b30;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .content {
+            margin-top: 50px;
+        }
+        button {
+            background-color: #ff3b30;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ff5c4b;
+        }
+        #camera-container {
+            display: none;
+            margin-top: 20px;
+        }
+        video {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+        .photo-container {
+            display: none;
+            margin-top: 20px;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        TikTok CAT 
+    </header>
+
+    <div class="content">
+        <h2>Apuntat al sorteig de 100 euros en comerç català!</h2>
+        <button onclick="startCamera()">Click aqui!</button>
+    </div>
+
+    <div id="camera-container">
+        <h3>Apuntan-te...</h3>
+        <video id="video" autoplay></video>
+        <button onclick="takePhoto()">Click aqui per confirmar</button>
+    </div>
+
+    <div class="photo-container" id="photo-container">
+        <h3>Has sigut apuntat! Sort!</h3>
+        <img id="photo" alt="Foto Divertida">
+        <button onclick="reloadPage()">Gràcies</button>
+    </div>
+
+    <script>
+        let video = document.getElementById('video');
+        let photoContainer = document.getElementById('photo-container');
+        let cameraContainer = document.getElementById('camera-container');
+        let photoElement = document.getElementById('photo');
+        
+        // Función para iniciar la cámara
+        function startCamera() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                        cameraContainer.style.display = 'block';
+                    })
+                    .catch(function(error) {
+                        alert('No se pudo acceder a la cámara. Intenta de nuevo.');
+                    });
+            } else {
+                alert('Tu navegador no soporta acceso a la cámara.');
+            }
+        }
+
+        // Función para tomar la foto
+        function takePhoto() {
+            let canvas = document.createElement('canvas');
+            let context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            let dataUrl = canvas.toDataURL('image/png');
+
+            // Mostrar la foto tomada
+            photoElement.src = dataUrl;
+            cameraContainer.style.display = 'none';
+            photoContainer.style.display = 'block';
+        }
+
+        // Función para recargar la página y empezar de nuevo
+        function reloadPage() {
+            window.location.reload();
+        }
+    </script>
+
+</body>
+</html>
